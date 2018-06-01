@@ -15,8 +15,8 @@ class secp256k1_swiftTests: XCTestCase {
         var unsuccesfulNondeterministic = 0;
         var allAttempts = 0
         for _ in 0 ..< 10000 {
-            let randomHash = SECP256K1.randomBytes(length: 32)!
-            let randomPrivateKey = SECP256K1.randomBytes(length: 32)!
+            guard let randomHash = SECP256K1.randomBytes(length: 32) else {return XCTFail()}
+            guard let randomPrivateKey = SECP256K1.randomBytes(length: 32) else {return XCTFail()}
             guard SECP256K1.verifyPrivateKey(privateKey: randomPrivateKey) else {continue}
             allAttempts = allAttempts + 1
             let signature = SECP256K1.signForRecovery(hash: randomHash, privateKey: randomPrivateKey, useExtraEntropy: true)

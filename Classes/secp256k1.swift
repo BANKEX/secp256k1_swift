@@ -275,8 +275,10 @@ extension SECP256K1 {
     internal static func randomBytes(length: Int) -> Data? {
         for _ in 0...1024 {
             var data = Data(repeating: 0, count: length)
-            let ptr = UnsafeMutableRawPointer(&data)
-            let result = SecRandomCopyBytes(kSecRandomDefault, length, ptr)
+            let result = data.withUnsafeMutableBytes {
+                (mutableBytes: UnsafeMutablePointer<UInt8>) -> Int32 in
+                SecRandomCopyBytes(kSecRandomDefault, 32, mutableBytes)
+            }
             if result == errSecSuccess {
                 return data
             }
